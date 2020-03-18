@@ -1,2 +1,145 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+from IPython.display import clear_output
+
+keypad = ["0","1","2","3","4","5","6","7","8","9"]
+
+def display_board(board):
+  clear_output()
+  print(' ')
+  print(' '+board[7]+' | '+board[8]+' | '+board[9])
+  print('---|---|---')
+  print(' '+board[4]+' | '+board[5]+' | '+board[6])
+  print('---|---|---')
+  print(' '+board[1]+' | '+board[2]+' | '+board[3])
+  print(' ')
+
+def playerinput():
+  global player1
+  global playername1
+  global player2
+  global playername2
+  global first
+  global second
+  playername1 = ''
+  playername2 = ''
+  while playername1 == '':
+    playername1 = input("Player 1, what is your name? ").capitalize()
+  while playername2 == '':
+    playername2 = input("Player 2, what is your name? ").capitalize()
+
+  player1 = ''
+  while player1 != 'X' and player1 != 'O':
+    player1 = input(playername1 + ', choose X or O: ').capitalize()
+  if player1 == 'X':
+    player2 = 'O'
+  elif player1 == 'O':
+    player2 = 'X'
+
+  print(playername1 + " - " + player1)
+  print(playername2 + " - " + player2)
+  display_board(keypad)
+
+  if player1 == 'X':
+    print(playername1 + " goes first.")
+    first = playername1
+    second = playername2
+  else: 
+    print(playername2 + " goes first.")
+    first = playername2
+    second = playername1
+
+def place_marker(board,marker,position):
+  board[position] = marker
+  display_board(board)
+
+def win_check(board, mark):
+  if (board[1] == board[2] == board [3] == mark):
+    return True
+  elif board[4] == board[5] == board[6] == mark:
+    return True
+  elif board[7] == board[8] == board[9] == mark:
+    return True
+  elif board[1] == board[4] == board[7] == mark:
+    return True
+  elif board[2] == board[5] == board[8] == mark:
+    return True
+  elif board[3] == board[6] == board[9] == mark:
+    return True
+  elif board[1] == board[5] == board[9] == mark:
+    return True
+  elif board[7] == board[5] == board[3] == mark:
+    return True
+  else:
+    return False
+
+def space_check(board, position):
+  if board[position] == 'X' or board[position] == 'O':
+    return True
+  else:
+    return False
+
+def full_board_check(board):
+  if board[1] != ' ' and board[2] != ' ' and board[3] != ' ' and board[4] != ' ' and board[5] != ' ' and board[6] != ' ' and board[7] != ' ' and board[8] != ' ' and board[9] != ' ':
+    return True
+  else:
+    return False
+
+def replay():
+  response = ''
+  while response != 'Y' or response != 'N':
+    response = input("Would you like to play again? Y or N?").capitalize()
+    if response == 'Y':
+      final()
+    elif response == 'N':
+      print("Have a nice day!")
+      break
+
+def game_on():
+  board = ["#"," "," "," "," "," "," "," "," "," "]
+  turncount = 0
+  turn = 'X'
+  while turncount <=9 and turn == 'X'and win_check(board,'X') == False and win_check(board,'O') == False and full_board_check(board) == False:
+    position1 = int(input(first + ", please enter a number for the board position choice: "))
+    while position1 > 9 or position1 < 0:
+      print("Please try again.")
+      position1 = int(input(first + ", please enter a number for the board position choice: "))
+    while space_check(board, position1) == True:
+      print("Oops! There is already something there!")
+      position1 = int(input(first + ", please enter a number for the board position choice: "))
+    place_marker(board,turn,position1)
+    turncount +=1
+    turn = 'O'
+    while turncount <=9 and turn == 'O' and win_check(board,'X') == False and win_check(board,'O') == False and full_board_check(board) == False:
+      position2 = int(input(second + ", please enter a number for the board position choice: "))
+      while position2 > 9 or position2 < 0:
+        print("Please try again.")
+        position2 = int(input(second + ", please enter a number for the board position choice: "))
+      while space_check(board, position2) == True:
+        print("Oops! There is already something there!")
+        position2 = int(input(second + ", please enter a number for the board position choice: "))
+      place_marker(board,turn,position2)
+      turncount +=1
+      turn = 'X'
+  if win_check(board, 'X') == True:
+    print("Congratulations! " + first + " has won!")
+    replay()
+  elif win_check(board,'O') == True:
+    print("Congratulations! " + second + " has won!")
+    replay()
+  while full_board_check(board) == True:
+    print("It's a Tie!")
+    replay()
+
+def final():
+  playerinput()
+  game_on()
+
+print("Welcome to Tic Tac Toe!")
+print(' ')
+final()
+
+
+
+
+
+
+
