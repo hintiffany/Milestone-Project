@@ -1,2 +1,2 @@
-# project1
- tictactoe
+# Project 1
+ Computerized TicTacToe Game in Python
